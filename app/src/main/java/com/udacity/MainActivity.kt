@@ -16,7 +16,6 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
 import android.widget.RadioButton
 import android.widget.Toast
@@ -24,10 +23,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.toolbar
-import kotlinx.android.synthetic.main.content_main.*
 import java.io.File
 
 
@@ -65,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             if (downloadID == id) {
                 if (action.equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
                     val query = DownloadManager.Query()
-                    query.setFilterById(intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0));
+                    query.setFilterById(intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0))
                     val manager = context!!.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                     val cursor: Cursor = manager.query(query)
                     if (cursor.moveToFirst()) {
@@ -107,7 +103,7 @@ class MainActivity : AppCompatActivity() {
                     .setRequiresCharging(false)
                     .setAllowedOverMetered(true)
                     .setAllowedOverRoaming(true)
-                    .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/repos/repository.zip")
+            // .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/repos/repository.zip")
 
 
             val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
