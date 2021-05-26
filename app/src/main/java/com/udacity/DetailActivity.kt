@@ -1,34 +1,45 @@
 package com.udacity
 
-import android.content.Intent
+import android.app.NotificationManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.udacity.util.AppConstant
+import com.udacity.util.cancelNotifications
 import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.content_detail.*
 
 class DetailActivity : AppCompatActivity() {
 
-    private var fileName = ""
-    private var status = ""
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
         setSupportActionBar(toolbar)
+        cancelNotification()
 
-        ok_button.setOnClickListener {
-            returnToMainActivity()
+        if (intent.hasExtra(AppConstant.SUCCESS))
+            if (intent.getBooleanExtra(AppConstant.SUCCESS, false)) {
+                status.text = getString(R.string.success)
+                status.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
+            } else {
+                status.text = getString(R.string.fail)
+                status.setTextColor(ContextCompat.getColor(this, R.color.color_red))
+            }
+        if (intent.hasExtra(AppConstant.TITLE)) {
+            file_name.text = intent.getStringExtra(AppConstant.TITLE)
         }
 
-        fileName = intent.getStringExtra("fileName").toString()
-        status = intent.getStringExtra("status").toString()
-        file_name.text = fileName
-        status_text.text = status
+        backButton.setOnClickListener {
+            finish()
+        }
     }
 
-    private fun returnToMainActivity() {
-        val mainActivity = Intent(this, MainActivity::class.java)
-        startActivity(mainActivity)
+    private fun cancelNotification() {
+        val notificationManager =
+            ContextCompat.getSystemService(
+                applicationContext,
+                NotificationManager::class.java
+            ) as NotificationManager
+        notificationManager.cancelNotifications()
     }
-
 }

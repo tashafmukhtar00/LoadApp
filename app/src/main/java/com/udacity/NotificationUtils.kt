@@ -1,50 +1,67 @@
-package com.udacity
+package com.udacity.util
 
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import com.udacity.DetailActivity
+import com.udacity.R
 
-private const val NOTIFICATION_ID = 0
-private const val REQUEST_CODE = 0
-private const val FLAGS = 0
+// Notification ID.
+private val NOTIFICATION_ID = 0
+private val REQUEST_CODE = 0
+private val FLAGS = 0
 
-/**
- * Builds and delivers the notification.
- *
- * @param context, activity context.
- */
-// May need to pass notification Id as a arg here.
 fun NotificationManager.sendNotification(
-    messageBody: String,
     applicationContext: Context,
-    status: String
+    title: String,
+    isSuccess: Boolean
 ) {
-    val contentIntent = Intent(applicationContext, DetailActivity::class.java)
-    contentIntent.apply {
-        putExtra("fileName", messageBody)
-        putExtra("status", status)
-    }
 
+    // Create the content intent for the notification, which launches
+    // this activity
+    val contentIntent = Intent(applicationContext, DetailActivity::class.java)
+    contentIntent.putExtra(AppConstant.TITLE, title)
+    contentIntent.putExtra(AppConstant.SUCCESS, isSuccess)
     val contentPendingIntent = PendingIntent.getActivity(
         applicationContext,
         NOTIFICATION_ID,
         contentIntent,
         PendingIntent.FLAG_UPDATE_CURRENT
     )
-    val action = NotificationCompat.Action.Builder(0, "Show Details", contentPendingIntent).build()
-    val notificationBuilder = NotificationCompat.Builder(
+
+    val buttonPendingIntent: PendingIntent = PendingIntent.getActivity(
         applicationContext,
-        applicationContext.getString(R.string.githubRepo_notification_channel_id)
+        REQUEST_CODE,
+        contentIntent,
+        FLAGS
     )
-        .setSmallIcon(R.drawable.ic_assistant_black_24dp)
-        .setContentTitle("Download Complete")
-        .setContentText(messageBody)
+
+    val builder = NotificationCompat.Builder(
+        applicationContext,
+        applicationContext.getString(R.string.download_notification_channel_id)
+    )
+        .setContentTitle(
+            applicationContext
+                .getString(R.string.notification_title)
+        )
+        .setContentText(
+            applicationContext
+                .getString(R.string.notification_description)
+        )
         .setContentIntent(contentPendingIntent)
         .setAutoCancel(true)
-        .setPriority(NotificationCompat.PRIORITY_HIGH)
-        .addAction(action)
+        .addAction(
+            R.drawable.ic_assistant_black_24dp,
+            applicationContext.getString(R.string.notification_button),
+            buttonPendingIntent
+        ).setSmallIcon(R.drawable.ic_assistant_black_24dp)
 
-    notify(NOTIFICATION_ID, notificationBuilder.build())
+        .setPriority(NotificationCompat.PRIORITY_HIGH)
+    notify(NOTIFICATION_ID, builder.build())
+}
+
+fun NotificationManager.cancelNotifications() {
+    cancelAll()
 }
