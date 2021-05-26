@@ -1,4 +1,4 @@
-package com.udacity.util
+package com.udacity
 
 class AppConstant {
 
